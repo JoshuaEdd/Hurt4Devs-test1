@@ -9,6 +9,7 @@ interface RecordPaymentModalProps {
   initialAmount: number;
   initialCategory: string;
   initialTitle: string;
+  currency?: string;
   onConfirmPayment: (amount: number, category: string, title: string, note: string) => void;
 }
 
@@ -19,12 +20,21 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
   initialAmount,
   initialCategory,
   initialTitle,
+  currency = 'USD',
   onConfirmPayment,
 }) => {
   const [amount, setAmount] = useState(initialAmount || 600);
   const [title, setTitle] = useState(initialTitle || 'Chamber Rent Share Settlement');
   const [paymentRail, setPaymentRail] = useState('Bank Transfer (Direct Clearing)');
   const [note, setNote] = useState('Automated verification matching roommate stipend schedule.');
+
+  // Sync state when modal opens with new initial values
+  React.useEffect(() => {
+    if (isOpen) {
+      setAmount(initialAmount || 600);
+      setTitle(initialTitle || 'Chamber Rent Share Settlement');
+    }
+  }, [isOpen, initialAmount, initialTitle]);
 
   // Close on Escape key
   React.useEffect(() => {
@@ -89,7 +99,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
 
           <div>
             <label htmlFor="payment-amount-input" className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
-              Amount (USD)
+              Amount ({currency})
             </label>
             <input
               id="payment-amount-input"

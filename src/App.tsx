@@ -119,6 +119,7 @@ export default function App() {
     amount: 600,
     category: 'rent',
     title: 'October Shared Chamber Rent',
+    currency: 'USD',
   });
 
   useEffect(() => {
@@ -211,8 +212,13 @@ export default function App() {
     setIsAuthenticated(false);
   };
 
-  const handleOpenRecordPayment = (category: string, amount: number, title: string) => {
-    setPaymentModalData({ category, amount, title });
+  const handleOpenRecordPayment = (category: string, amount: number, title: string, currency?: string) => {
+    setPaymentModalData({
+      category,
+      amount,
+      title,
+      currency: currency || (amount >= 1000 ? '₦' : 'USD'),
+    });
     setRecordPaymentModalOpen(true);
   };
 
@@ -377,9 +383,18 @@ export default function App() {
                 <ChambersView
                   chamber={chamber}
                   currentUser={currentUser}
+                  responsibilities={responsibilities}
+                  supportItems={supportItems}
+                  vouches={vouches}
+                  trailEvents={trailEvents}
                   onOpenRecordPayment={handleOpenRecordPayment}
                   onOpenPeerSupport={handleOpenPeerSupportWithCategory}
                   onOpenRepairModal={() => setRepairModalOpen(true)}
+                  onSelectTab={setActiveTab}
+                  onOpenCreateSupport={() => setCreateSupportModalOpen(true)}
+                  onOpenStatementModal={() => setStatementModalOpen(true)}
+                  onFulfillSupport={handleFulfillSupport}
+                  onDeclineSupport={handleDeclineSupport}
                 />
               )}
 
@@ -475,6 +490,7 @@ export default function App() {
           initialAmount={paymentModalData.amount}
           initialCategory={paymentModalData.category}
           initialTitle={paymentModalData.title}
+          currency={paymentModalData.currency}
           onConfirmPayment={handleConfirmPayment}
         />
 
